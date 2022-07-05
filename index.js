@@ -9,6 +9,62 @@
  for you to use if you need it!
  */
 
+const createEmployeeRecord = (recordArray) => {
+    return {
+        firstName: recordArray[0],
+        familyName: recordArray[1],
+        title: recordArray[2],
+        payPerHour: recordArray[3],
+        timeInEvents: [],
+        timeOutEvents: []
+    }
+}
+
+const createEmployeeRecords = (recordsArray) => {
+    return recordsArray.map(rec => createEmployeeRecord(rec))  // return new array of object records and apss each record. CERs go into new array .map returns.
+} 
+
+const createTimeInEvent = function (dateStamp) {
+    const [date, hour] = dateStamp.split(" ")  // create space between the date & object also returng anarray, refer YT video on restructuring 
+    // console.log('hour: ', hour);
+    // console.log('date: ', date);
+    // const arrFromDate = dateStamp.split(" ")
+    // const date = arrFromDate[0]
+    // const hour = arrFromDate[1]
+    const inEvent = {
+        type: "TimeIn",
+        hour: parseInt(hour),
+        date: date
+    }
+    this.timeInEvents.push(inEvent)
+    //console.log('this', this);
+
+    return this  // returning new object with timeInEvetns array ****look into how 'this' works more in depth*****
+}
+
+const createTimeOutEvent = function (dateStamp) {
+    const [date, hour] = dateStamp.split(" ")  // create space between the date & object also returng anarray, refer YT video on restructuring 
+   
+    const OutEvent = {
+        type: "TimeOut",
+        hour: parseInt(hour),
+        date: date
+    }
+    this.timeOutEvents.push(OutEvent)
+   
+
+    return this  // returning new object with timeInEvetns array ****look into how 'this' works more in depth*****
+}
+const hoursWorkedOnDate = function(targetDate){
+    const inEvent = this.timeInEvents.find(inEvent => inEvent.date === targetDate)
+    const outEvent = this.timeOutEvents.find(OutEvent => OutEvent.date === targetDate)
+    return (outEvent.hour - inEvent.hour) / 100
+}
+
+const wagesEarnedOnDate = function(targetDate){
+    return hoursWorkedOnDate.call(this, targetDate) * this.payPerHour
+}
+
 const allWagesFor = function () {
     const eligibleDates = this.timeInEvents.map(function (e) {
         return e.date
@@ -21,3 +77,12 @@ const allWagesFor = function () {
     return payable
 }
 
+const findEmployeeByFirstName = (srcArray, firstName) => {
+    return srcArray.find(rec => rec.firstName === firstName)
+}
+
+const calculatePayroll = function (recsArray){
+    return recsArray.reduce((total, rec) => {
+        return total + allWagesFor.call(rec)
+    }, 0)
+}
